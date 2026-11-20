@@ -2,17 +2,24 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { buildApartment } from "./apartment";
 import { cameraAt } from "./journey";
+import type { Personalization } from "./personalization";
 
 export default function ApartmentWorld({
   progress,
   reducedMotion,
+  personalization,
 }: {
   progress: RefObject<number>;
   reducedMotion: boolean;
+  personalization: Personalization;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const [unavailable, setUnavailable] = useState(false);
   const motion = useRef(reducedMotion);
+  const settings = useRef(personalization);
+  useEffect(() => {
+    settings.current = personalization;
+  }, [personalization]);
   useEffect(() => {
     motion.current = reducedMotion;
   }, [reducedMotion]);
@@ -38,7 +45,8 @@ export default function ApartmentWorld({
     element.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 100);
-    scene.add(new THREE.HemisphereLight("#fff7eb", "#d7e1d5", 1.9));
+    const ambient = new THREE.HemisphereLight("#fff7f1", "#e0ccdf", 1.9);
+    scene.add(ambient);
     const light = new THREE.DirectionalLight("#fff5df", 3.2);
     light.position.set(-3, 12, 8);
     light.castShadow = true;
@@ -59,6 +67,7 @@ export default function ApartmentWorld({
     fill.position.set(5, 4, -6);
     scene.add(fill);
     const apartment = buildApartment();
+    apartment.applyPersonalization(settings.current, true);
     scene.add(apartment.root);
     const groundGeometry = new THREE.PlaneGeometry(200, 200);
     const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.12 });
@@ -80,6 +89,9 @@ export default function ApartmentWorld({
     let dirty = true;
     let lastProgress = -1;
     let current = progress.current;
+    let previousSettings = settings.current;
+    let lastTime = performance.now();
+    let sunsetMix = 0;
     let visible = true;
     const visibility = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
@@ -90,14 +102,44 @@ export default function ApartmentWorld({
     const target = new THREE.Vector3();
     renderer.setAnimationLoop(() => {
       if (!visible || document.hidden) return;
+      const now = performance.now();
+      const delta = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+      if (previousSettings !== settings.current) {
+        apartment.applyPersonalization(settings.current, motion.current);
+        previousSettings = settings.current;
+        dirty = true;
+      }
+      if (apartment.animate(delta, motion.current)) dirty = true;
+      const sunsetTarget = settings.current.sunset ? 1 : 0;
+      if (Math.abs(sunsetTarget - sunsetMix) > 0.001) {
+        sunsetMix = motion.current
+          ? sunsetTarget
+          : THREE.MathUtils.damp(sunsetMix, sunsetTarget, 4, delta);
+        light.color.setRGB(1, 0.96 - sunsetMix * 0.3, 0.88 - sunsetMix * 0.43);
+        light.intensity = 3.2 - sunsetMix * 0.5;
+        ambient.intensity = 1.9 - sunsetMix * 0.7;
+        dirty = true;
+      }
       const desired = motion.current ? 0 : progress.current;
-      current += (desired - current) * 0.09;
+      current = motion.current
+        ? desired
+        : THREE.MathUtils.damp(current, desired, 9, delta);
       if (Math.abs(desired - current) < 0.00005) current = desired;
       if (!dirty && Math.abs(current - lastProgress) < 0.000001) return;
       const pose = cameraAt(current);
       camera.position.set(...pose.position);
-      // A tall viewport gets a wider field of view, never a cropped desktop film.
-      camera.fov = width / height < 0.9 ? 47 : 37;
+      // Full-bleed scene; place the focal point beside/under its translucent copy.
+      const portrait = width / height < 0.9;
+      camera.fov = portrait ? 52 : 37;
+      camera.setViewOffset(
+        width,
+        height,
+        portrait ? 0 : -width * 0.16,
+        portrait ? -height * 0.24 : 0,
+        width,
+        height,
+      );
       camera.updateProjectionMatrix();
       target.set(...pose.target);
       camera.lookAt(target);
@@ -128,7 +170,7 @@ export default function ApartmentWorld({
       className="world-canvas"
       ref={host}
       role="img"
-      aria-label="Departamento 3D de plastilina con sala verde menta, cocina, habitación lavanda y balcón. La cámara recorre los espacios al desplazarte."
+      aria-label={`Departamento 3D rosa malva personalizado: ${personalization.people} tazas en la cocina, ropa de cama ${personalization.bedding === "rose" ? "rosa" : personalization.bedding === "mauve" ? "malva" : "crema"}, lámpara ${personalization.lamp ? "encendida" : "apagada"}, luz de ${personalization.sunset ? "atardecer" : "mañana"}.`}
     >
       {unavailable && (
         <div className="world-fallback">

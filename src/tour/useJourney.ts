@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { progressAt, stageAt } from "./journey";
+import { presentationAt, progressAt } from "./journey";
 
 export function useJourney() {
   const container = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
-  const [stage, setStage] = useState(0);
+  const [presentation, setPresentation] = useState(presentationAt(0));
   const [reducedMotion, setReducedMotion] = useState(false);
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -21,7 +21,12 @@ export function useJourney() {
         bounds.height,
         window.innerHeight,
       );
-      setStage(stageAt(progress.current));
+      const next = presentationAt(progress.current);
+      setPresentation((previous) =>
+        previous.stage === next.stage && previous.opacity === next.opacity
+          ? previous
+          : next,
+      );
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -39,5 +44,5 @@ export function useJourney() {
       window.removeEventListener("resize", schedule);
     };
   }, []);
-  return { container, progress, stage, reducedMotion };
+  return { container, progress, ...presentation, reducedMotion };
 }

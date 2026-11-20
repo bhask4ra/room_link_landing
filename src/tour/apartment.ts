@@ -1,9 +1,12 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { beddingColors, type Personalization } from "./personalization";
 
 // All objects are original procedural geometry. No external models or paid assets.
 export function buildApartment() {
   const root = new THREE.Group();
+  const plants: THREE.Group[] = [];
+  const cups: THREE.Group[] = [];
   const materials = new Map<string, THREE.MeshStandardMaterial>();
   const geometries = new Set<THREE.BufferGeometry>();
   const material = (color: string) => {
@@ -73,6 +76,8 @@ export function buildApartment() {
     group.position.set(x, y, z);
     group.scale.setScalar(scale);
     root.add(group);
+    group.name = `plant-${plants.length}`;
+    plants.push(group);
     cylinder(0.25, 0.19, 0.4, [0, 0.2, 0], "#e6bcb0", group);
     cylinder(0.22, 0.22, 0.035, [0, 0.4, 0], "#826f58", group);
     cylinder(0.025, 0.025, 0.9, [0, 0.83, 0], "#667c53", group);
@@ -138,14 +143,14 @@ export function buildApartment() {
     box([2.85, 0.12, 0.32], [x, 0.71, -3.85], "#fcfaf7");
   }
 
-  // Living room: mint sofa, lavender rug, pebble coffee table and reading lamp.
+  // Soft rose upholstery references the mobile app's mauve palette.
   box([3.4, 0.045, 2.65], [-2.3, 0.06, 2.05], "#d6cce7", 0.2);
-  box([2.7, 0.36, 1.05], [-2.65, 0.4, 0.55], "#9fbda5", 0.16);
-  box([2.7, 0.72, 0.3], [-2.65, 0.81, 0.08], "#a9c9ae", 0.14);
-  box([0.3, 0.65, 1.1], [-4, 0.65, 0.55], "#b6cfb8", 0.14);
-  box([0.3, 0.65, 1.1], [-1.3, 0.65, 0.55], "#b6cfb8", 0.14);
+  box([2.7, 0.36, 1.05], [-2.65, 0.4, 0.55], "#bc91ae", 0.16);
+  box([2.7, 0.72, 0.3], [-2.65, 0.81, 0.08], "#d6b0c6", 0.14);
+  box([0.3, 0.65, 1.1], [-4, 0.65, 0.55], "#d6c2d9", 0.14);
+  box([0.3, 0.65, 1.1], [-1.3, 0.65, 0.55], "#d6c2d9", 0.14);
   for (const x of [-3.45, -2.65, -1.85])
-    box([0.75, 0.2, 0.8], [x, 0.65, 0.62], "#c0d6bf", 0.1);
+    box([0.75, 0.2, 0.8], [x, 0.65, 0.62], "#e3c8d7", 0.1);
   const pillow = box([0.5, 0.47, 0.18], [-3.5, 0.95, 0.5], "#f5d6c8", 0.1);
   pillow.rotation.z = -0.2;
   box([0.5, 0.44, 0.2], [-1.8, 0.93, 0.44], "#eee8d6", 0.09).rotation.z = 0.18;
@@ -160,11 +165,11 @@ export function buildApartment() {
   person(-0.95, 2.65, "#b6a0d4", "#d9a17c", "#51403b", -0.6);
   person(-2.35, 3.3, "#e7b49e", "#efc6a3", "#655042", 0.5);
 
-  // Kitchen: mint cabinets with handles, a sink, a stove and a tiny breakfast.
-  box([3.4, 0.82, 0.75], [-2.55, 0.43, -3.5], "#b6cbbd", 0.04);
+  // Kitchen: mauve cabinets and a shared coffee station.
+  box([3.4, 0.82, 0.75], [-2.55, 0.43, -3.5], "#bda8c3", 0.04);
   box([3.55, 0.12, 0.85], [-2.55, 0.9, -3.48], "#fffaf0", 0.03);
   for (const x of [-3.6, -2.6, -1.6]) {
-    box([0.88, 0.66, 0.045], [x, 0.47, -3.1], "#c8d9ca", 0.02);
+    box([0.88, 0.66, 0.045], [x, 0.47, -3.1], "#dfcedf", 0.02);
     box([0.18, 0.035, 0.045], [x, 0.68, -3.06], "#8c9d8f", 0.01);
   }
   box([0.72, 0.03, 0.47], [-3.55, 0.98, -3.48], "#a5bab9", 0.08);
@@ -187,8 +192,45 @@ export function buildApartment() {
     cylinder(0.28, 0.28, 0.13, [x, 0.5, -1.6], "#d7c3dd");
     cylinder(0.055, 0.08, 0.5, [x, 0.25, -1.6], "#b49c81");
   }
-  cylinder(0.18, 0.13, 0.08, [-2.05, 0.96, -1.6], "#f9f5e9");
-  ball([0.12, 0.1, 0.11], [-2.08, 1.03, -1.6], "#dfb67e");
+  const coffeeStation = new THREE.Group();
+  coffeeStation.name = "coffee-station";
+  coffeeStation.position.set(-2.05, 0.92, -1.6);
+  root.add(coffeeStation);
+  box([0.52, 0.07, 0.43], [0, 0.035, -0.2], "#a58d9f", 0.03, coffeeStation);
+  box([0.49, 0.55, 0.27], [0, 0.33, -0.32], "#c1a0b9", 0.09, coffeeStation);
+  box([0.38, 0.13, 0.38], [0, 0.57, -0.24], "#e9d9e4", 0.04, coffeeStation);
+  box([0.25, 0.28, 0.03], [0, 0.29, -0.17], "#705569", 0.03, coffeeStation);
+  cylinder(0.045, 0.045, 0.1, [0, 0.45, -0.08], "#d7ba83", coffeeStation);
+  ball([0.032, 0.032, 0.018], [0.14, 0.49, -0.17], "#f3e0b4", coffeeStation);
+  const cupPositions = [
+    [-0.44, 0, 0.06],
+    [-0.17, 0, 0.36],
+    [0.17, 0, 0.36],
+    [0.44, 0, 0.06],
+  ];
+  for (let i = 0; i < 4; i++) {
+    const cup = new THREE.Group();
+    cup.name = `coffee-cup-${i + 1}`;
+    cup.position.set(...(cupPositions[i] as [number, number, number]));
+    coffeeStation.add(cup);
+    cylinder(
+      0.115,
+      0.09,
+      0.19,
+      [0, 0.12, 0],
+      i % 2 ? "#e9d9cb" : "#e7c7d8",
+      cup,
+    );
+    cylinder(0.095, 0.095, 0.012, [0, 0.217, 0], "#886853", cup);
+    cylinder(0.15, 0.15, 0.025, [0, 0.013, 0], "#f5e8ed", cup);
+    mesh(
+      new THREE.TorusGeometry(0.065, 0.019, 8, 16),
+      "#e7c7d8",
+      [0.12, 0.13, 0],
+      cup,
+    );
+    cups.push(cup);
+  }
   plant(-0.95, -3.5, 0.35, 0.99);
 
   // Bedroom: upholstered bed, folds, pillows, nightstand and wall art.
@@ -196,13 +238,24 @@ export function buildApartment() {
   box([2.2, 0.4, 2.9], [2.65, 0.33, -1.75], "#bfad98", 0.1);
   box([2.26, 1.25, 0.22], [2.65, 0.76, -3.15], "#d0b8d8", 0.15);
   box([2.12, 0.28, 2.8], [2.65, 0.65, -1.75], "#f9f4e9", 0.15);
-  box([2.16, 0.16, 1.7], [2.65, 0.83, -1.15], "#c7b4db", 0.12);
-  box([2.16, 0.12, 0.42], [2.65, 0.9, -0.6], "#aa96c3", 0.06);
+  const bedding = box([2.16, 0.16, 1.7], [2.65, 0.83, -1.15], "#d6aabb", 0.12);
+  bedding.name = "custom-bedding";
+  const beddingMaterial = bedding.material.clone();
+  bedding.material = beddingMaterial;
+  materials.set("custom-bedding", beddingMaterial);
+  box([2.16, 0.12, 0.42], [2.65, 0.9, -0.6], "#c3a7b9", 0.06);
   for (const x of [2.1, 3.15])
     box([0.88, 0.2, 0.56], [x, 0.85, -2.65], "#fcf9f0", 0.16);
   box([0.6, 0.5, 0.65], [1.03, 0.3, -2.8], "#debe9c", 0.06);
   cylinder(0.12, 0.17, 0.15, [1.03, 0.65, -2.8], "#d2a98e");
-  ball([0.24, 0.2, 0.24], [1.03, 0.85, -2.8], "#f4e0af");
+  const lampShade = ball([0.24, 0.2, 0.24], [1.03, 0.85, -2.8], "#f4e0af");
+  const lampMaterial = lampShade.material.clone();
+  lampShade.material = lampMaterial;
+  materials.set("reading-lamp", lampMaterial);
+  const readingLight = new THREE.PointLight("#ffcc83", 0, 5, 2);
+  readingLight.name = "reading-light";
+  readingLight.position.set(1.03, 1.05, -2.8);
+  root.add(readingLight);
   box([0.9, 1.1, 0.07], [0.95, 1.9, -4.01], "#c7aa8a");
   box([0.75, 0.95, 0.04], [0.95, 1.9, -3.96], "#f6eee1");
   ball([0.22, 0.25, 0.02], [0.95, 1.98, -3.92], "#d1b4b0");
@@ -228,13 +281,61 @@ export function buildApartment() {
   plant(4.1, 3.6, 0.85);
   plant(1.4, 3.6, 0.6);
   // A sleepy clay cat at the threshold.
-  ball([0.28, 0.17, 0.2], [0.4, 0.24, 2.7], "#cfb59c");
-  ball([0.16, 0.16, 0.15], [0.63, 0.32, 2.7], "#cfb59c");
-  mesh(new THREE.ConeGeometry(0.075, 0.13, 3), "#c4a68c", [0.56, 0.49, 2.7]);
-  mesh(new THREE.ConeGeometry(0.075, 0.13, 3), "#c4a68c", [0.7, 0.49, 2.7]);
+  const cat = new THREE.Group();
+  cat.name = "house-cat";
+  root.add(cat);
+  ball([0.28, 0.17, 0.2], [0.4, 0.24, 2.7], "#cfb59c", cat);
+  ball([0.16, 0.16, 0.15], [0.63, 0.32, 2.7], "#cfb59c", cat);
+  mesh(
+    new THREE.ConeGeometry(0.075, 0.13, 3),
+    "#c4a68c",
+    [0.56, 0.49, 2.7],
+    cat,
+  );
+  mesh(
+    new THREE.ConeGeometry(0.075, 0.13, 3),
+    "#c4a68c",
+    [0.7, 0.49, 2.7],
+    cat,
+  );
+
+  let cupAnimation = false;
+  function applyPersonalization(state: Personalization, reducedMotion = false) {
+    plants.forEach((item) => {
+      item.visible = state.preferences.includes("plants");
+    });
+    cat.visible = state.preferences.includes("pets");
+    cups.forEach((cup, index) => {
+      const visible = index < state.people;
+      if (visible && !cup.visible) {
+        cup.scale.setScalar(reducedMotion ? 1 : 0.01);
+        cupAnimation = !reducedMotion;
+      }
+      cup.visible = visible;
+      if (reducedMotion) cup.scale.setScalar(1);
+    });
+    beddingMaterial.color.set(beddingColors[state.bedding]);
+    readingLight.intensity = state.lamp ? 4 : 0;
+    lampMaterial.emissive.set(state.lamp ? "#ffbc62" : "#000000");
+    lampMaterial.emissiveIntensity = state.lamp ? 0.8 : 0;
+  }
 
   return {
     root,
+    applyPersonalization,
+    animate(deltaSeconds: number, reducedMotion: boolean) {
+      if (!cupAnimation) return false;
+      cupAnimation = false;
+      cups.forEach((cup) => {
+        if (!cup.visible) return;
+        const value = reducedMotion
+          ? 1
+          : THREE.MathUtils.damp(cup.scale.x, 1, 12, deltaSeconds);
+        cup.scale.setScalar(value > 0.995 ? 1 : value);
+        cupAnimation ||= cup.scale.x < 1;
+      });
+      return true;
+    },
     dispose() {
       geometries.forEach((g) => g.dispose());
       materials.forEach((m) => m.dispose());

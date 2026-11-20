@@ -1,9 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { progressAt, stageAt, cameraAt, splitRent } from "./journey";
+import {
+  progressAt,
+  stageAt,
+  cameraAt,
+  splitRent,
+  presentationAt,
+} from "./journey";
 
 // Cases come from the agreed journey: five stops, reversible scroll, continuous
 // camera, and an illustrative shared monthly rent. They do not copy scene data.
 describe("scroll journey", () => {
+  it("holds copy at each room and hides it during travel in both directions", () => {
+    for (const progress of [0, 0.25, 0.5, 0.75, 1]) {
+      expect(presentationAt(progress).opacity).toBe(1);
+      expect(presentationAt(progress).interactive).toBe(true);
+    }
+    for (const seam of [0.125, 0.375, 0.625, 0.875]) {
+      expect(presentationAt(seam).opacity).toBe(0);
+      expect(presentationAt(seam).interactive).toBe(false);
+      expect(presentationAt(seam - 0.01).opacity).toBe(
+        presentationAt(seam + 0.01).opacity,
+      );
+    }
+    expect(cameraAt(0.25)).toEqual(cameraAt(0.27));
+  });
   it("clamps before entry and after the last stop", () => {
     expect(progressAt(100, 5000, 1000)).toBe(0);
     expect(progressAt(-6000, 5000, 1000)).toBe(1);

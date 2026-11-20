@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { splitRent } from "../tour/journey";
 const money = (amount: number) =>
   new Intl.NumberFormat("es-MX", {
@@ -7,8 +6,13 @@ const money = (amount: number) =>
     maximumFractionDigits: 0,
   }).format(amount);
 
-export function RentCalculator() {
-  const [people, setPeople] = useState(3);
+export function RentCalculator({
+  people,
+  onPeopleChange,
+}: {
+  people: 2 | 3 | 4;
+  onPeopleChange: (people: 2 | 3 | 4) => void;
+}) {
   const shares = splitRent(8400, people);
   return (
     <div className="rent-card">
@@ -23,18 +27,21 @@ export function RentCalculator() {
       <div className="split-control">
         <span>¿Cuántos roomies?</span>
         <div role="group" aria-label="Número de roomies">
-          {[2, 3, 4].map((count) => (
+          {([2, 3, 4] as const).map((count) => (
             <button
               key={count}
               type="button"
               aria-pressed={count === people}
-              onClick={() => setPeople(count)}
+              onClick={() => onPeopleChange(count)}
             >
               {count}
             </button>
           ))}
         </div>
       </div>
+      <p className="coffee-feedback" aria-live="polite">
+        {people} roomies, {people} tazas. Hay café para todos.
+      </p>
       <p className="rent-summary" aria-live="polite">
         {money(8400)} MXN entre {people} personas. Solo renta, sin servicios.
       </p>

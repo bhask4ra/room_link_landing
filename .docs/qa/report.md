@@ -1,39 +1,40 @@
-# Verificación de la landing
+# Verificación del rediseño inmersivo
 
-Fecha: 2026-11-19. Proyecto independiente: RoomLink_Landing.
+Fecha: 2026-11-20. Proyecto independiente: RoomLink_Landing.
 
 ## Matriz
 
 | Nivel | Estado | Evidencia |
 | --- | --- | --- |
-| Unitario | PASSED | `npm test`: 7 pruebas de lógica/hook, límites, reversibilidad, continuidad de cámara, reparto exacto e inválidos, movimiento reducido y limpieza de observadores |
-| Integración | PASSED | `npm test`: 2 pruebas de componentes: calculadora con reparto real y diálogo con estado React. 9/9 totales en 4 archivos |
-| Estático | PASSED | `npm run check`, `npm run format:check`, `npm run build` |
-| Smoke | PASSED | Versión `dist/` servida con `npm run preview -- --port 4174 --strictPort`; HTTP 200 y carga del canvas WebGL en navegador; CTA abre diálogo y Escape lo cierra; enlaces internos válidos |
+| Unitario | PASSED | Progreso, límites, continuidad, entrada/salida de contenido, reparto exacto, movimiento reducido y limpieza |
+| Integración | PASSED | Controles React y reducer conectados a objetos Three.js reales: tazas, plantas, gato, cama, lámpara; favorito, acuerdos, restablecer y conservación entre etapas. 15/15 pruebas en 6 archivos |
+| Estático | PASSED | npm run check, npm run format:check, npm run build |
+| Smoke | PASSED | dist en puerto 4174; canvas WebGL, navegación, cocina y teclado |
 
-## Evidencia de detección de errores
+## Sensibilidad de las pruebas
 
-Dos alteraciones temporales que seguían compilando:
+Dos mutaciones temporales compilables, ejecutadas en las cinco pruebas de personalización y recorrido:
 
-1. Progreso siempre cero y reparto siempre cero: **3 pruebas fallaron por aserción**, 6 pasaron.
-2. Cámara que ignora el progreso y reparto que pierde el centavo restante: **2 pruebas fallaron por aserción**, 7 pasaron.
+1. Reducer ignora el número elegido y conserva tres personas: 2 fallos, 3 pasan.
+2. Cocina siempre muestra tres tazas: 2 fallos, 3 pasan (sincronización y animación).
 
-Se restauró el comportamiento y se ejecutó la suite completa: **9/9**. Ninguna mutación quedó en los archivos entregados. El adaptador de diálogo de jsdom solo reproduce `showModal`/`close`; la interacción nativa con Escape se verificó en el navegador.
+Archivos restaurados inmediatamente. Suite final completa: 15/15. Las pruebas de escena usan geometría real; solo el test de paneles sustituye la frontera de GPU.
 
 ## Revisión visual y funcional
 
-- Escritorio 1440 × 900 y móvil 390 × 844 en el navegador integrado.
-- Escena 3D real, cinco paradas y navegación entre habitaciones.
-- Calculadora en móvil: al elegir cuatro personas cambia de $2,800 a $2,100 MXN por persona.
-- Vista fija y reanudación de cámara probadas.
-- Diálogo con foco inicial en Cerrar; Escape cierra y devuelve el foco al botón que lo abrió.
-- En la versión compilada, sin enlaces internos rotos ni desbordamiento horizontal a 390 px.
-- Importación dinámica de Three.js con estado de carga visible.
+- Escritorio 1440 × 900 y móvil 390 × 844 en navegador integrado.
+- Escenario fijo y un solo panel activo, con entrada/salida por scroll.
+- Paneles ocultos con inert y aria-hidden; movimiento reducido verificado por tests.
+- «Ver solo el depa» oculta los detalles y permite recuperarlos sin borrar preferencias.
+- Like reversible, plantas/gato visibles u ocultos, cama malva, lámpara y atardecer comprobados visualmente.
+- Cuatro personas: $2,100 MXN de ejemplo y cuatro tazas. Repartos 2/3/4 cubiertos en integración.
+- Sin desbordamiento horizontal ni enlaces internos rotos a 390 px. Navegación con Enter y selección con Space.
+- Capturas: redesign-mobile.jpg, redesign-desktop.jpg y redesign-sala.jpg.
 
 ## Límites
 
-- Sin publicación externa: entrega local para un repositorio independiente.
-- No hay integración con login/backend ni URL pública de descarga. El CTA explica el proyecto.
-- No se probó un teléfono físico, Safari ni GPU de gama baja. Movimiento reducido cubierto por prueba de hook y CSS; no se cambió la preferencia del sistema del usuario.
-- La ruta de error por pérdida de contexto WebGL está implementada; no se forzó una pérdida de GPU durante esta revisión.
-- Build avisa por el chunk de Three.js (~536 kB, ~133 kB gzip). El contenido principal se carga separado. No se modificó el umbral para ocultar el aviso.
+- Entrega local, sin publicación, backend ni destino público de descarga. CTA informativo.
+- Preferencias en memoria durante la visita; recargar restablece la demostración.
+- No se probó teléfono físico, Safari ni GPU de gama baja. No se cambió la preferencia del sistema del usuario.
+- Fallback WebGL implementado; no se forzó pérdida de GPU.
+- Aviso de build por Three.js: 538.19 kB / 133.45 kB gzip, separado del contenido inicial. No se ocultó.

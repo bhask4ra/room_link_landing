@@ -1,7 +1,5 @@
 # Plan activo
 
-No hay plan activo. La landing independiente de RoomLink quedó completada el 2026-11-19.
+Sin trabajo pendiente dentro del alcance aprobado.
 
-- Plan cerrado: [archive/landing-20261119.md](archive/landing-20261119.md).
-- Estado: [session_state.md](session_state.md).
-- Pruebas y límites: [qa/report.md](qa/report.md).
+Rediseño terminado el 2026-11-20. Plan y decisiones: [recorrido inmersivo](archive/immersive-redesign-20261120.md). Resultados: [QA](qa/report.md).

@@ -25,8 +25,11 @@ Abre http://localhost:4174. El contenido publicado está en `dist/`; puede servi
 - Entrada → sala → cocina → habitación → balcón, dentro del mismo departamento.
 - Cámara continua ligada al scroll, navegación directa a cada espacio y control para fijar la vista general.
 - Muebles, plantas, gato y personas de plastilina construidos con geometría original.
-- Blancos y acentos menta, lavanda y durazno. Manrope e iconos incluidos localmente.
-- Calculadora ilustrativa de reparto de renta entre 2, 3 o 4 roomies.
+- Blancos y rosa malva de la app móvil: `#D6C2D9`, `#E9DDEA`, `#F8F5F9` y `#81638B`. Manrope e iconos incluidos localmente.
+- Escena a pantalla completa con un panel translúcido por etapa: aparece al llegar y desaparece durante el traslado. Opción «Ver solo el depa» para ocultar los detalles.
+- Corazón animado y ocho hábitos activables. Plantas y mascota cambian en la escena; las selecciones se conservan al cambiar de habitación durante la visita.
+- Calculadora ilustrativa entre 2, 3 o 4 roomies, sincronizada con una cafetera y exactamente ese número de tazas.
+- Tres colores de ropa de cama, lámpara de lectura, luz de mañana/atardecer y acuerdos de convivencia seleccionables. Restablecer devuelve los valores iniciales.
 - Contenido adaptable, preguntas frecuentes, diálogo informativo, teclado, movimiento reducido y alternativa textual si WebGL no está disponible.
 - Sin APIs externas, claves, generación de video, suscripciones, analítica ni servicios de pago. La escena se renderiza en el navegador.
 
@@ -35,7 +38,10 @@ Abre http://localhost:4174. El contenido publicado está en `dist/`; puede servi
 | Archivo | Contenido |
 | --- | --- |
 | `src/App.tsx` | Historia, textos, navegación, FAQ y secciones finales |
-| `src/styles.css` | Sistema visual y adaptaciones de pantalla |
+| `src/styles.css` / `src/immersive.css` | Estilos generales / escenario, transparencias y controles |
+| `src/tour/ImmersiveTour.tsx` | Etapas, navegación y estado compartido del recorrido |
+| `src/tour/personalization.ts` | Preferencias, valores iniciales y cambios de estado |
+| `src/components/RoomControls.tsx` / `LikeButton.tsx` | Personalización y favorito animado |
 | `src/tour/apartment.ts` | Departamento y personajes originales |
 | `src/tour/journey.ts` | Trayectoria de cámara, progreso y reparto de renta |
 | `src/tour/ApartmentWorld.tsx` | Renderizado, luces, sombras y liberación de recursos |
@@ -43,7 +49,7 @@ Abre http://localhost:4174. El contenido publicado está en `dist/`; puede servi
 | `src/components/RentCalculator.tsx` | Ejemplo interactivo de renta |
 | `src/components/InfoDialog.tsx` | Presentación de la app y avisos de la demo |
 
-El botón principal abre información honesta del proyecto. No hay una URL pública de registro/descarga confirmada; cuando exista, cambia esa acción por su enlace real. No se simulan envíos ni registros. El perfil, la afinidad y la renta se etiquetan como ilustrativos.
+El botón principal abre información honesta del proyecto. No hay una URL pública de registro/descarga confirmada; cuando exista, cambia esa acción por su enlace real. No se simulan envíos ni registros. El perfil y la renta se etiquetan como ilustrativos. Las elecciones son una demostración local y se reinician al recargar; no se envían ni crean un perfil real.
 
 El prototipo tiene `noindex`. Antes de publicar: revisar textos, colocar el destino real del botón y reemplazar los metadatos sociales con URL absoluta e imagen compatible con el alojamiento. `public/social.svg` es una base editable; varias redes requieren PNG/JPEG para mostrar la tarjeta.
 
@@ -56,7 +62,7 @@ npm test
 npm run build
 ```
 
-Las nueve pruebas cubren límites y reversibilidad del recorrido, continuidad de cámara, conservación de centavos, entradas inválidas, calculadora integrada con el cálculo real, diálogo y cambios de movimiento reducido. Se comprobaron fallos intencionales antes de restaurar y aprobar la suite. Resultados y límites en [`.docs/qa/report.md`](.docs/qa/report.md).
+Las 15 pruebas cubren recorrido y transiciones, cámara, reparto de renta, diálogo, movimiento reducido, preferencias reversibles, controles ocultos, conservación del estado entre habitaciones y sincronización entre React y los objetos reales de Three.js sin recrearlos. Se comprobaron fallos intencionales antes de restaurar y aprobar la suite. Resultados y límites en [`.docs/qa/report.md`](.docs/qa/report.md).
 
 Three.js se carga aparte del contenido inicial. Su archivo supera ligeramente el umbral de advertencia de tamaño de Vite, aunque comprimido ocupa aproximadamente 133 kB. La advertencia no se ocultó. No se ha medido rendimiento en un teléfono físico ni compatibilidad específica con Safari.
 
