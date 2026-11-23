@@ -61,7 +61,7 @@ const rooms = [
   },
 ];
 
-export default function ImmersiveTour({ openApp }: { openApp: () => void }) {
+export default function ImmersiveTour({ loginUrl }: { loginUrl: string }) {
   const { container, progress, stage, opacity, interactive, reducedMotion } =
     useJourney();
   const [state, dispatch] = useReducer(
@@ -138,9 +138,9 @@ export default function ImmersiveTour({ openApp }: { openApp: () => void }) {
                   Pasa, imagina tu hogar y descubre con quién te gustaría
                   compartirlo.
                 </p>
-                <button className="button button-dark" onClick={openApp}>
+                <a className="button button-dark" href={loginUrl}>
                   Conoce RoomLink
-                </button>
+                </a>
                 <a className="immersive-scroll-prompt" href="#sala">
                   <ArrowDown size={18} />
                   Haz scroll. La visita empieza contigo.

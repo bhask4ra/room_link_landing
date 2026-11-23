@@ -49,7 +49,7 @@ Abre http://localhost:4174. El contenido publicado está en `dist/`; puede servi
 | `src/components/RentCalculator.tsx` | Ejemplo interactivo de renta |
 | `src/components/InfoDialog.tsx` | Presentación de la app y avisos de la demo |
 
-El botón principal abre información honesta del proyecto. No hay una URL pública de registro/descarga confirmada; cuando exista, cambia esa acción por su enlace real. No se simulan envíos ni registros. El perfil y la renta se etiquetan como ilustrativos. Las elecciones son una demostración local y se reinician al recargar; no se envían ni crean un perfil real.
+Los botones principales enlazan al inicio de sesión publicado de RoomLink. No se simulan envíos ni registros desde la landing. El perfil y la renta se etiquetan como ilustrativos. Las elecciones son una demostración local y se reinician al recargar; no se envían ni crean un perfil real.
 
 El prototipo tiene `noindex`. Antes de publicar: revisar textos, colocar el destino real del botón y reemplazar los metadatos sociales con URL absoluta e imagen compatible con el alojamiento. `public/social.svg` es una base editable; varias redes requieren PNG/JPEG para mostrar la tarjeta.
 

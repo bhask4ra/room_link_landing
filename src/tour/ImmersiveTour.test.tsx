@@ -19,13 +19,13 @@ vi.mock("./ApartmentWorld", () => ({
 
 it("mounts one panel, removes hidden controls from accessibility and preserves choices between rooms", async () => {
   const user = userEvent.setup();
-  const view = render(<ImmersiveTour openApp={() => {}} />);
+  const view = render(<ImmersiveTour loginUrl="https://example.com/login" />);
   await user.click(
     screen.getByRole("button", { name: "Me gusta este perfil de ejemplo" }),
   );
   journey.opacity = 0;
   journey.interactive = false;
-  view.rerender(<ImmersiveTour openApp={() => {}} />);
+  view.rerender(<ImmersiveTour loginUrl="https://example.com/login" />);
   expect(view.container.querySelectorAll(".stage-panel")).toHaveLength(1);
   expect(view.container.querySelector(".stage-panel")).toHaveAttribute("inert");
   expect(
@@ -34,15 +34,15 @@ it("mounts one panel, removes hidden controls from accessibility and preserves c
   journey.stage = 2;
   journey.opacity = 1;
   journey.interactive = true;
-  view.rerender(<ImmersiveTour openApp={() => {}} />);
+  view.rerender(<ImmersiveTour loginUrl="https://example.com/login" />);
   await user.click(screen.getByRole("button", { name: "4" }));
   journey.stage = 1;
-  view.rerender(<ImmersiveTour openApp={() => {}} />);
+  view.rerender(<ImmersiveTour loginUrl="https://example.com/login" />);
   expect(
     screen.getByRole("button", { name: "Me gusta este perfil de ejemplo" }),
   ).toHaveAttribute("aria-pressed", "true");
   journey.stage = 2;
-  view.rerender(<ImmersiveTour openApp={() => {}} />);
+  view.rerender(<ImmersiveTour loginUrl="https://example.com/login" />);
   expect(screen.getByText("$2,100")).toBeVisible();
   await user.click(screen.getByRole("button", { name: "Restablecer mi depa" }));
   expect(screen.getByText("$2,800")).toBeVisible();
@@ -63,7 +63,7 @@ it("keeps the current room readable in reduced motion even during travel", () =>
     interactive: false,
     reducedMotion: true,
   });
-  const view = render(<ImmersiveTour openApp={() => {}} />);
+  const view = render(<ImmersiveTour loginUrl="https://example.com/login" />);
   expect(
     screen.getByRole("button", { name: "Plantas por todas partes" }),
   ).toBeVisible();
@@ -76,4 +76,18 @@ it("keeps the current room readable in reduced motion even during travel", () =>
   expect(
     screen.getByRole("button", { name: "Fijar vista del departamento" }),
   ).toBeDisabled();
+});
+
+it("links the welcome call to action to the published login", () => {
+  Object.assign(journey, {
+    stage: 0,
+    opacity: 1,
+    interactive: true,
+    reducedMotion: false,
+  });
+  render(<ImmersiveTour loginUrl="https://example.com/login" />);
+  expect(screen.getByRole("link", { name: "Conoce RoomLink" })).toHaveAttribute(
+    "href",
+    "https://example.com/login",
+  );
 });

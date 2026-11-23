@@ -8,6 +8,9 @@ import {
 import ImmersiveTour from "./tour/ImmersiveTour";
 import { InfoDialog, type DialogKind } from "./components/InfoDialog";
 
+export const ROOMLINK_LOGIN_URL =
+  "https://roomlink-prod-xdg80v.canadacentral.cloudapp.azure.com/login";
+
 const faqs = [
   [
     "¿Qué es RoomLink?",
@@ -95,7 +98,6 @@ function Tagline() {
 
 export default function App() {
   const [dialog, setDialog] = useState<DialogKind>(null);
-  const openApp = () => setDialog("app");
   if (
     window.location.pathname !== "/" &&
     window.location.pathname !== "/index.html"
@@ -128,12 +130,12 @@ export default function App() {
           <a href="#como-funciona">Cómo funciona</a>
           <a href="#preguntas">Preguntas</a>
         </nav>
-        <button className="button button-dark header-cta" onClick={openApp}>
+        <a className="button button-dark header-cta" href={ROOMLINK_LOGIN_URL}>
           Conoce RoomLink
-        </button>
+        </a>
       </header>
       <main id="contenido">
-        <ImmersiveTour openApp={openApp} />
+        <ImmersiveTour loginUrl={ROOMLINK_LOGIN_URL} />
         <section className="together-section" id="como-funciona">
           <span className="eyebrow">NO SOLO SE TRATA DE UN DEPARTAMENTO</span>
           <Tagline />
@@ -214,9 +216,9 @@ export default function App() {
             empieza con tu gente.
           </h2>
           <p>Y quizá esté a una buena conversación de distancia.</p>
-          <button className="button button-dark" onClick={openApp}>
+          <a className="button button-dark" href={ROOMLINK_LOGIN_URL}>
             Encuentra tu próximo capítulo
-          </button>
+          </a>
           <span className="caption">Conoce el proyecto RoomLink</span>
         </section>
       </main>

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { X, HouseLine, ChatsCircle, Heart } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react";
 
-export type DialogKind = "app" | "privacy" | "about" | null;
+export type DialogKind = "privacy" | "about" | null;
 export function InfoDialog({
   kind,
   onClose,
@@ -33,45 +33,8 @@ export function InfoDialog({
       <h2 id="dialog-title">
         {kind === "privacy"
           ? "Tu privacidad en esta demo."
-          : kind === "about"
-            ? "Un hogar imaginado. Una idea real."
-            : "Tu próximo capítulo, en compañía."}
+          : "Un hogar imaginado. Una idea real."}
       </h2>
-      {kind === "app" && (
-        <>
-          <p>
-            RoomLink reúne personas, espacios y conversaciones para ayudarte a
-            encontrar con quién vivir.
-          </p>
-          <div className="dialog-features">
-            <p>
-              <Heart size={24} /> Un perfil que cuenta cómo te gusta vivir.
-            </p>
-            <p>
-              <ChatsCircle size={24} /> Conversaciones con posibles roomies.
-            </p>
-            <p>
-              <HouseLine size={24} /> Opciones de vivienda y acuerdos
-              compartidos.
-            </p>
-          </div>
-          <div className="honest-note">
-            La app está en desarrollo. Esta página es una presentación: todavía
-            no incluye un enlace público de registro o descarga.
-          </div>
-          <button
-            className="button button-dark"
-            onClick={() => {
-              onClose();
-              document
-                .getElementById("como-funciona")
-                ?.scrollIntoView({ behavior: "instant" });
-            }}
-          >
-            Ver cómo funciona
-          </button>
-        </>
-      )}
       {kind === "privacy" && (
         <>
           <p>
