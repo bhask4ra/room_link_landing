@@ -121,7 +121,7 @@ export default function App() {
       <header className="site-header">
         <a className="brand" href="#bienvenido" aria-label="RoomLink, inicio">
           <span className="brand-icon">
-            <HouseLine size={24} weight="bold" />
+            <img src="/roomlink-logo.svg" alt="" width={40} height={35} />
           </span>
           roomlink<span className="brand-dot">.</span>
         </a>
@@ -225,7 +225,7 @@ export default function App() {
       <footer>
         <a className="brand" href="#bienvenido">
           <span className="brand-icon">
-            <HouseLine size={20} weight="bold" />
+            <img src="/roomlink-logo.svg" alt="" width={32} height={28} />
           </span>
           roomlink.
         </a>

@@ -194,11 +194,12 @@ svg {
 .brand-icon {
   display: grid;
   place-items: center;
-  background: #e9ddea;
-  color: #81638b;
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+}
+.brand-icon img {
+  width: 100%;
+  height: auto;
 }
 .brand-dot {
   color: #b695c0;
